@@ -1,0 +1,9 @@
+id = "pusher01"
+
+grpc_bind = "0.0.0.0:7002"
+
+nexus_addr = "127.0.0.1:7001"
+
+[debug]
+database = false
+print_routes = false

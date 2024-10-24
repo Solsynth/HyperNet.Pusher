@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+option go_package = ".;proto";
+
+package proto;
+
+service PusherService {
+  rpc PushNotification(PushNotificationRequest) returns (DeliveryResponse) {}
+  rpc PushNotificationBatch(PushNotificationBatchRequest) returns (DeliveryResponse) {}
+  rpc DeliverEmail(DeliverEmailRequest) returns (DeliveryResponse) {}
+  rpc DeliverEmailBatch(DeliverEmailBatchRequest) returns (DeliveryResponse) {}
+}
+
+// Notifications parts
+
+message NotifyInfo {
+  string topic = 1;
+  string title = 2;
+  optional string subtitle = 3;
+  string body = 4;
+  bytes metadata = 5;
+  int32 priority = 6;
+}
+
+message PushNotificationRequest {
+  string provider = 1;
+  string device_token = 2;
+  NotifyInfo notify = 3;
+}
+
+message PushNotificationBatchRequest {
+  repeated string providers = 1;
+  repeated string device_tokens = 2;
+  NotifyInfo notify = 3;
+}
+
+// Email parts
+
+message EmailInfo {
+  string subject = 1;
+  optional string text_body = 2;
+  optional string html_body = 3;
+}
+
+message DeliverEmailRequest {
+  string to = 1;
+  EmailInfo email = 2;
+}
+
+message DeliverEmailBatchRequest {
+  repeated string to = 1;
+  EmailInfo email = 2;
+}
+
+message DeliveryResponse {
+  bool is_success = 1;
+}
