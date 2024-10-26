@@ -39,7 +39,7 @@ func (v *AppleNotifyProvider) Push(in pushkit.Notification, tk string) error {
 		Topic:       viper.GetString(v.topic),
 		Payload:     rawData,
 	}
-	_, err := v.conn.Push(payload)
+	_, err = v.conn.Push(payload)
 	return err
 }
 

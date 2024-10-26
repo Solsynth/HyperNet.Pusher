@@ -26,11 +26,15 @@ func (v *Server) PushNotificationBatch(ctx context.Context, request *proto.PushN
 }
 
 func (v *Server) DeliverEmail(ctx context.Context, request *proto.DeliverEmailRequest) (*proto.DeliveryResponse, error) {
-	//TODO implement me
-	panic("implement me")
+	go provider.SendMail(request.GetTo(), pushkit.NewEmailDataFromProto(request.GetEmail()))
+	return &proto.DeliveryResponse{IsSuccess: true}, nil
 }
 
 func (v *Server) DeliverEmailBatch(ctx context.Context, request *proto.DeliverEmailBatchRequest) (*proto.DeliveryResponse, error) {
-	//TODO implement me
-	panic("implement me")
+	go func() {
+		for _, to := range request.GetTo() {
+			_ = provider.SendMail(to, pushkit.NewEmailDataFromProto(request.GetEmail()))
+		}
+	}()
+	return &proto.DeliveryResponse{IsSuccess: true}, nil
 }

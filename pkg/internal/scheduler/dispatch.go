@@ -47,5 +47,37 @@ func SubscribeToQueue() error {
 		return fmt.Errorf("failed to subscribe notification batch topic: %v", err)
 	}
 
+	_, err = mq.Nt.Subscribe(pushkit.PushEmailMqTopic, func(msg *nats.Msg) {
+		var req pushkit.EmailDeliverRequest
+		if json.Unmarshal(msg.Data, &req) != nil {
+			return
+		} else if validate.Struct(&req) != nil {
+			return
+		}
+
+		go provider.SendMail(req.To, req.Email)
+	})
+	if err != nil {
+		return fmt.Errorf("failed to subscribe email topic: %v", err)
+	}
+
+	_, err = mq.Nt.Subscribe(pushkit.PushEmailBatchMqTopic, func(msg *nats.Msg) {
+		var req pushkit.EmailDeliverBatchRequest
+		if json.Unmarshal(msg.Data, &req) != nil {
+			return
+		} else if validate.Struct(&req) != nil {
+			return
+		}
+
+		go func() {
+			for _, to := range req.To {
+				_ = provider.SendMail(to, req.Email)
+			}
+		}()
+	})
+	if err != nil {
+		return fmt.Errorf("failed to subscribe email batch topic: %v", err)
+	}
+
 	return nil
 }

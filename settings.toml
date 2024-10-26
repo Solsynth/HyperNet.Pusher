@@ -7,3 +7,10 @@ nexus_addr = "127.0.0.1:7001"
 [debug]
 database = false
 print_routes = false
+
+[mailer]
+name = "Alphabot <alphabot@smartsheep.studio>"
+smtp_host = "smtp.exmail.qq.com"
+smtp_port = 465
+username = "alphabot@smartsheep.studio"
+password = "gz937Zxxzfcd9SeH"

@@ -8,6 +8,7 @@ require (
 	github.com/fatih/color v1.17.0
 	github.com/go-playground/validator/v10 v10.22.1
 	github.com/goccy/go-json v0.10.3
+	github.com/jordan-wright/email v4.0.1-0.20210109023952-943e75fe5223+incompatible
 	github.com/nats-io/nats.go v1.37.0
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/rs/zerolog v1.33.0
