@@ -12,6 +12,7 @@ require (
 	github.com/nats-io/nats.go v1.37.0
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/rs/zerolog v1.33.0
+	github.com/samber/lo v1.47.0
 	github.com/sideshow/apns2 v0.24.0
 	github.com/spf13/viper v1.19.0
 	google.golang.org/api v0.171.0
