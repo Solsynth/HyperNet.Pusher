@@ -4,13 +4,22 @@ import (
 	"crypto/tls"
 	"fmt"
 	"git.solsynth.dev/hypernet/pusher/pkg/pushkit"
+	"github.com/google/uuid"
 	"github.com/jordan-wright/email"
+	"github.com/rs/zerolog/log"
 	"github.com/spf13/viper"
 	"net/smtp"
 	"net/textproto"
 )
 
 func SendMail(target string, in pushkit.EmailData) error {
+	requestId := uuid.NewString()
+	log.Debug().
+		Str("request_id", requestId).
+		Str("to", target).
+		Str("subject", in.Subject).
+		Msg("Sending email...")
+
 	mail := &email.Email{
 		To:      []string{target},
 		From:    viper.GetString("mailer.name"),
@@ -23,7 +32,7 @@ func SendMail(target string, in pushkit.EmailData) error {
 	if in.HTML != nil {
 		mail.HTML = []byte(*in.HTML)
 	}
-	return mail.SendWithTLS(
+	err := mail.SendWithTLS(
 		fmt.Sprintf("%s:%d", viper.GetString("mailer.smtp_host"), viper.GetInt("mailer.smtp_port")),
 		smtp.PlainAuth(
 			"",
@@ -33,4 +42,14 @@ func SendMail(target string, in pushkit.EmailData) error {
 		),
 		&tls.Config{ServerName: viper.GetString("mailer.smtp_host")},
 	)
+
+	if err != nil {
+		log.Warn().
+			Str("request_id", requestId).
+			Str("to", target).
+			Str("subject", in.Subject).
+			Err(err).Msg("Failed to send email...")
+	}
+
+	return err
 }
