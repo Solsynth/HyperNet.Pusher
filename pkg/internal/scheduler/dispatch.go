@@ -9,6 +9,7 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/goccy/go-json"
 	"github.com/nats-io/nats.go"
+	"github.com/rs/zerolog/log"
 )
 
 var validate = validator.New(validator.WithRequiredStructEnabled())
@@ -21,9 +22,11 @@ func SubscribeToQueue() error {
 
 	_, err = mq.Nt.Subscribe(pushkit.PushNotificationMqTopic, func(msg *nats.Msg) {
 		var req pushkit.NotificationPushRequest
-		if json.Unmarshal(msg.Data, &req) != nil {
+		if err := json.Unmarshal(msg.Data, &req); err != nil {
+			log.Warn().Err(err).Msg("Dropped a notify request, unable to parse request body")
 			return
-		} else if validate.Struct(&req) != nil {
+		} else if err := validate.Struct(&req); err != nil {
+			log.Warn().Err(err).Msg("Dropped a notify request, failed to validate request body")
 			return
 		}
 
@@ -35,9 +38,11 @@ func SubscribeToQueue() error {
 
 	_, err = mq.Nt.Subscribe(pushkit.PushNotificationBatchMqTopic, func(msg *nats.Msg) {
 		var req pushkit.NotificationPushBatchRequest
-		if json.Unmarshal(msg.Data, &req) != nil {
+		if err := json.Unmarshal(msg.Data, &req); err != nil {
+			log.Warn().Err(err).Msg("Dropped a notify batch request, unable to parse request body")
 			return
-		} else if validate.Struct(&req) != nil {
+		} else if err := validate.Struct(&req); err != nil {
+			log.Warn().Err(err).Msg("Dropped a notify batch request, failed to validate request body")
 			return
 		}
 
@@ -49,9 +54,11 @@ func SubscribeToQueue() error {
 
 	_, err = mq.Nt.Subscribe(pushkit.PushEmailMqTopic, func(msg *nats.Msg) {
 		var req pushkit.EmailDeliverRequest
-		if json.Unmarshal(msg.Data, &req) != nil {
+		if err := json.Unmarshal(msg.Data, &req); err != nil {
+			log.Warn().Err(err).Msg("Dropped a push email request, unable to parse request body")
 			return
-		} else if validate.Struct(&req) != nil {
+		} else if err := validate.Struct(&req); err != nil {
+			log.Warn().Err(err).Msg("Dropped a push email request, failed to validate request body")
 			return
 		}
 
@@ -63,9 +70,11 @@ func SubscribeToQueue() error {
 
 	_, err = mq.Nt.Subscribe(pushkit.PushEmailBatchMqTopic, func(msg *nats.Msg) {
 		var req pushkit.EmailDeliverBatchRequest
-		if json.Unmarshal(msg.Data, &req) != nil {
+		if err := json.Unmarshal(msg.Data, &req); err != nil {
+			log.Warn().Err(err).Msg("Dropped a push email batch request, unable to parse request body")
 			return
-		} else if validate.Struct(&req) != nil {
+		} else if err := validate.Struct(&req); err != nil {
+			log.Warn().Err(err).Msg("Dropped a push email batch request, failed to validate request body")
 			return
 		}
 
