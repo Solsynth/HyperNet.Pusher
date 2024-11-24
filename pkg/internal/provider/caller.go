@@ -50,11 +50,6 @@ func PushNotification(in pushkit.NotificationPushRequest) error {
 
 func PushNotificationBatch(in pushkit.NotificationPushBatchRequest) {
 	requestId := uuid.NewString()
-	log.Debug().
-		Int("count", len(in.Tokens)).
-		Str("topic", in.Notification.Topic).
-		Str("request_id", requestId).
-		Msg("Pushing notification batch...")
 
 	var wg sync.WaitGroup
 	for idx, key := range in.Providers {
@@ -65,6 +60,14 @@ func PushNotificationBatch(in pushkit.NotificationPushBatchRequest) {
 		go func() {
 			wg.Add(1)
 			defer wg.Done()
+
+			log.Debug().
+				Str("tk", in.Tokens[0]).
+				Str("provider", in.Providers[0]).
+				Str("topic", in.Notification.Topic).
+				Str("request_id", requestId).
+				Msg("Pushing notification...")
+
 			start := time.Now()
 			err := prov.Push(in.Notification, in.Tokens[idx])
 			if err != nil {
