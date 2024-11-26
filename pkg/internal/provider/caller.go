@@ -26,6 +26,11 @@ func PushNotification(in pushkit.NotificationPushRequest) error {
 
 	prov, ok := notifyProviders[in.Provider]
 	if !ok {
+		log.Warn().
+			Str("provider", in.Provider).
+			Str("topic", in.Notification.Topic).
+			Str("request_id", requestId).
+			Msg("Provider was not found, push skipped...")
 		return fmt.Errorf("provider not found")
 	}
 	start := time.Now()
@@ -62,6 +67,11 @@ func PushNotificationBatch(in pushkit.NotificationPushBatchRequest) {
 	for idx, key := range in.Providers {
 		prov, ok := notifyProviders[key]
 		if !ok {
+			log.Warn().
+				Str("provider", key).
+				Str("topic", in.Notification.Topic).
+				Str("request_id", requestId).
+				Msg("Provider was not found, push skipped...")
 			continue
 		}
 		go func() {

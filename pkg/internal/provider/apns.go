@@ -2,6 +2,7 @@ package provider
 
 import (
 	"git.solsynth.dev/hypernet/pusher/pkg/pushkit"
+	"github.com/rs/zerolog/log"
 	"github.com/sideshow/apns2"
 	payload2 "github.com/sideshow/apns2/payload"
 	"github.com/spf13/viper"
@@ -39,7 +40,19 @@ func (v *AppleNotifyProvider) Push(in pushkit.Notification, tk string) error {
 		Topic:       viper.GetString(v.topic),
 		Payload:     rawData,
 	}
-	_, err = v.conn.Push(payload)
+
+	resp, err := v.conn.Push(payload)
+	if resp != nil {
+		log.Debug().
+			Str("token", tk).
+			Str("remote_id", resp.ApnsID).
+			Str("remote_uuid", resp.ApnsUniqueID).
+			Int("status", resp.StatusCode).
+			Time("timestamp", resp.Timestamp.Time).
+			Str("reason", resp.Reason).
+			Msg("Pushed once notification to apple")
+	}
+
 	return err
 }
 

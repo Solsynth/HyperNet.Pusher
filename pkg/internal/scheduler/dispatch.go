@@ -30,7 +30,7 @@ func SubscribeToQueue() error {
 			return
 		}
 
-		go provider.PushNotification(req)
+		provider.PushNotification(req)
 	})
 	if err != nil {
 		return fmt.Errorf("failed to subscribe notification topic: %v", err)
@@ -46,7 +46,7 @@ func SubscribeToQueue() error {
 			return
 		}
 
-		go provider.PushNotificationBatch(req)
+		provider.PushNotificationBatch(req)
 	})
 	if err != nil {
 		return fmt.Errorf("failed to subscribe notification batch topic: %v", err)
@@ -62,7 +62,7 @@ func SubscribeToQueue() error {
 			return
 		}
 
-		go provider.SendMail(req.To, req.Email)
+		provider.SendMail(req.To, req.Email)
 	})
 	if err != nil {
 		return fmt.Errorf("failed to subscribe email topic: %v", err)
@@ -78,11 +78,9 @@ func SubscribeToQueue() error {
 			return
 		}
 
-		go func() {
-			for _, to := range req.To {
-				_ = provider.SendMail(to, req.Email)
-			}
-		}()
+		for _, to := range req.To {
+			_ = provider.SendMail(to, req.Email)
+		}
 	})
 	if err != nil {
 		return fmt.Errorf("failed to subscribe email batch topic: %v", err)

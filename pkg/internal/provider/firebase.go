@@ -6,6 +6,7 @@ import (
 	"firebase.google.com/go/messaging"
 	"fmt"
 	"git.solsynth.dev/hypernet/pusher/pkg/pushkit"
+	"github.com/rs/zerolog/log"
 )
 
 type FirebaseNotifyProvider struct {
@@ -31,7 +32,12 @@ func (v *FirebaseNotifyProvider) Push(in pushkit.Notification, tk string) error 
 		Token: tk,
 	}
 
-	_, err = client.Send(ctx, message)
+	resp, err := client.Send(ctx, message)
+	log.Debug().
+		Str("token", tk).
+		Str("response", resp).
+		Msg("Pushed once notification to firebase")
+
 	return err
 }
 
