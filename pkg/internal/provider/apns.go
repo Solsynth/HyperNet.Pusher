@@ -5,7 +5,6 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/sideshow/apns2"
 	payload2 "github.com/sideshow/apns2/payload"
-	"github.com/spf13/viper"
 )
 
 type AppleNotifyProvider struct {
@@ -37,7 +36,7 @@ func (v *AppleNotifyProvider) Push(in pushkit.Notification, tk string) error {
 	}
 	payload := &apns2.Notification{
 		DeviceToken: tk,
-		Topic:       viper.GetString(v.topic),
+		Topic:       v.topic,
 		Payload:     rawData,
 	}
 
