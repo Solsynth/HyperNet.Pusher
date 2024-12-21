@@ -2,11 +2,12 @@ package provider
 
 import (
 	"fmt"
+	"sync"
+	"time"
+
 	"git.solsynth.dev/hypernet/pusher/pkg/pushkit"
 	"github.com/google/uuid"
 	"github.com/rs/zerolog/log"
-	"sync"
-	"time"
 )
 
 var notifyProviders = make(map[string]NotificationProvider)
@@ -22,6 +23,7 @@ func PushNotification(in pushkit.NotificationPushRequest) error {
 		Str("provider", in.Provider).
 		Str("topic", in.Notification.Topic).
 		Str("request_id", requestId).
+		Any("body", in.Notification).
 		Msg("Pushing notification...")
 
 	prov, ok := notifyProviders[in.Provider]
@@ -60,6 +62,7 @@ func PushNotificationBatch(in pushkit.NotificationPushBatchRequest) {
 		Any("tk", in.Tokens).
 		Any("providers", in.Providers).
 		Str("topic", in.Notification.Topic).
+		Any("body", in.Notification).
 		Str("request_id", requestId).
 		Msg("Pushing notification in batch...")
 
