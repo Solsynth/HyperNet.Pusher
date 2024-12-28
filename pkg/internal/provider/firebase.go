@@ -2,9 +2,10 @@ package provider
 
 import (
 	"context"
+	"fmt"
+
 	firebase "firebase.google.com/go"
 	"firebase.google.com/go/messaging"
-	"fmt"
 	"git.solsynth.dev/hypernet/pusher/pkg/pushkit"
 	"github.com/rs/zerolog/log"
 )
@@ -20,14 +21,17 @@ func (v *FirebaseNotifyProvider) Push(in pushkit.Notification, tk string) error 
 		return fmt.Errorf("failed to create firebase client")
 	}
 
-	var subtitle string
+	var body string
 	if len(in.Subtitle) > 0 {
-		subtitle = "\n" + in.Subtitle
+		body = fmt.Sprintf("%s\n%s", in.Body, in.Subtitle)
+	} else {
+		body = in.Body
 	}
+
 	message := &messaging.Message{
 		Notification: &messaging.Notification{
 			Title: in.Title,
-			Body:  subtitle + in.Body,
+			Body:  body,
 		},
 		Token: tk,
 	}
