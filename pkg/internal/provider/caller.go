@@ -17,6 +17,8 @@ func AddProvider(in NotificationProvider) {
 }
 
 func PushNotification(in pushkit.NotificationPushRequest) error {
+	in.Notification = TranslateNotify(in.Notification, in.Lang)
+
 	requestId := uuid.NewString()
 	log.Debug().
 		Str("tk", in.Token).
@@ -77,10 +79,11 @@ func PushNotificationBatch(in pushkit.NotificationPushBatchRequest) {
 				Msg("Provider was not found, push skipped...")
 			continue
 		}
+		wg.Add(1)
 		go func() {
-			wg.Add(1)
 			defer wg.Done()
 
+			in.Notification = TranslateNotify(in.Notification, in.Lang[idx])
 			log.Debug().
 				Str("tk", in.Tokens[0]).
 				Str("provider", in.Providers[0]).

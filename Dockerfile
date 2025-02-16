@@ -10,6 +10,8 @@ FROM golang:alpine
 
 COPY --from=pusher-server /dist /pusher/server
 
+COPY locales /locales
+
 EXPOSE 8444
 
 CMD ["/pusher/server"]

@@ -20,6 +20,8 @@ message NotifyInfo {
   string body = 4;
   bytes metadata = 5;
   int32 priority = 6;
+  optional string translate_key = 7;
+  bytes translate_args = 8;
 }
 
 message PushNotificationRequest {
