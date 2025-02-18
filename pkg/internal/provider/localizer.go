@@ -8,7 +8,7 @@ import (
 )
 
 func TranslateNotify(nty pushkit.Notification, lang string) pushkit.Notification {
-	if nty.TranslateKey != nil {
+	if nty.TranslateKey == nil {
 		return nty
 	}
 
